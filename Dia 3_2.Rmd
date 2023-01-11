@@ -1,0 +1,324 @@
+---
+title: "Gráficos"
+output: html_document
+---
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 16px;
+}
+pre {
+  font-size: 16px
+}
+h1,h2,h3,h4,h5,h6{
+  font-size: 24pt;
+}
+</style>
+
+Nesta aula vamos aprender a fazer grápicos (plot). Utilizaremos dois métodos diferentes. Primeiro, usando os comando do pacote R Base que já vem instalado no seu R. Segundo, usando o pacote ggplot2. Se quisermos fazer um gráfico exploratório rapidamente, a função plot do R base é suficiente. No entanto, as funções do pacote ggplo2 fornece muito mais ferramentas, dando maior versatilidade e elegância aos gráficos.
+
+
+# Elementos da Aula
+
+1. [Gráficos de dispersão](#anchor1)
+2. [Gráficos de linha](#anchor2)
+3. [Graficos de barra](#anchor3)
+4. [Gráficos de histogramas](#anchor4)
+5. [Graficos boxplot](#anchor5)
+6. [Elementos visuais](#anchor6)
+
+## Gráficos de dispersão {#anchor1}
+
+Para fazermos um gráfico de dispersão utilizamos duas informações básicas: o eixo x e o eixo y.
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "Copy code", tooltip_success = "Copied!")
+```
+- Utilizando o R base
+```{r fig.dim = c(4, 4) }
+mtcars
+
+plot(mtcars$wt, mtcars$mpg)
+
+```
+
+Interpretação: quanto maior é o peso do carro (wt), menor é o consumo (mpg).
+
+Uma forma mais sucinta é utilizarmos a expressão "~" para indicarmos que os valores do eixo y variam "em função" dos valores do eixo x. No entanto, precisamos também indicar o dataframe em que estão os dados
+
+```{r fig.dim = c(4, 4)}
+plot(mpg ~ wt, data = mtcars)
+```
+
+- Utilizando o ggplot2 
+```{r fig.dim = c(4, 4)}
+library(ggplot2)
+ggplot(data = mtcars, mapping = aes(x = wt, y = mpg)) +
+  geom_point()
+```
+
+A primeira parte (ggplot) cria o objeto plot. O argumento "data" nos diz ao objeto plot onde encontrar as variáveis que serão usadas. O argumento "mapping" possui a função aes() (aestetics), que diz ao objeto plot quais são as variáveis do eixo-x e eixo-y. A função "aes()" do argumento "mapping NÃO diz onde estão as variáveis que podem ser usadas. A função aes() também defini cor, formato, tamanho e outras características visuais, mas isso veremos na proxima aula.
+
+A segunda parte (geom_point) adiciona a camada que informa o tipo de gráfico atraves de uma função "geom_", no caso, um gráfico de pontos. Note que sem adicionar a segunda parte, não temos um gráfico completo
+
+<center><img src="img/ggplot.png" height="500px"></img></center>  
+
+```{r fig.dim = c(4, 4)}
+ggplot(data = mtcars, mapping = aes(x = wt, y = mpg))
+
+ggplot(data = mtcars, mapping = aes(x = wt, y = mpg)) +
+  geom_point()
+```
+
+Percebam que o comando acima é igual a:
+```{r fig.dim = c(4, 4)}
+p <- ggplot(data = mtcars, mapping = aes(x = wt, y = mpg))
+p + geom_point()
+```
+
+Para iniciantes, é recomendado escrever os argumentos e separá-los em linhas para tornar mais agradável visualmente
+
+```{r results='hide', fig.dim = c(4, 4) }
+ggplot(data = mtcars, 
+       mapping = aes(x = wt,
+                     y = mpg))+
+  geom_point()
+```
+
+### Gráficos de linha {#anchor2}
+
+- Para usarmos o R base, incluimos um vetor de valores x e um vetor de valores y na função plot()
+```{r fig.dim = c(4, 4)}
+plot(x = pressure$temperature, y = pressure$pressure, type = "l") # o argumento type = "l" indica que o gráfico será de linhas.
+```
+
+Para adicionarmos pontos e linhas, adicionamos a as funções "points()" e "lines()". Observe que ao usarmos a função plot e o argumento type = "l" criamos um gráfico de linhas. Porém, ao utilizarmos a função lines() acrescentamos linhas a um gráfico existente
+
+```{r fig.dim = c(4, 4)}
+plot(x = pressure$temperature, y = pressure$pressure, type = "l")
+
+points(x = pressure$temperature, y = pressure$pressure)
+
+lines(x = pressure$temperature, y = pressure$pressure/2)
+
+points(x = pressure$temperature, y = pressure$pressure/2)
+```
+
+- Para usarmos o ggplot2, usamos a função geom_line
+```{r fig.dim = c(4, 4)}
+p <- ggplot(pressure, aes(x = temperature, y = pressure)) 
+p + 
+  geom_line()
+```
+
+Para adicionarmos pontos, adicionamos uma nova camada da função geom_points()
+```{r fig.dim = c(4, 4)}
+p + 
+  geom_line() +
+  geom_point()
+```
+
+### Gráficos de barra {#anchor3}
+
+- Para usarmos o R base, usamos a função "barplot" incluindo um vetor de valores para a altura das barras, e um vetor de categorias para cada barra.
+
+```{r fig.dim = c(4, 4)}
+BOD
+
+barplot(BOD$demand, names.arg = BOD$Time)
+```
+
+Muitas vezes desejamos um gráfico de barras que mostre a frequência de observações em cada categoria. Para fazermos este gráfico, precisamos calcular a frenquência e fornecer estas informações para o gráfico (o número de observações em cada categoria)
+```{r fig.dim = c(4, 4)}
+mtcars
+
+mtcars$cyl
+
+tabela <- table(mtcars$cyl)
+
+barplot(tabela)
+```
+
+- Utilizando o ggplot
+Para usarmos o ggplot, também devemos oferecer um vetor de valores para a altura das barras, e um vetor de categorias para cada barra
+```{r fig.dim = c(4, 4)}
+p <- ggplot(data = BOD, mapping = aes(x = Time, y = demand))
+p + geom_col()
+```
+
+Note que o ggplot diferencia variaveis contínuas com as categóricas. Como utilizamos o vetor Time da classe numérica, o ggplot entende ser uma variável continua, que no caso, não tem valores para o Time 6. Para interpretarmos Time como variável categorica, temos que usar a função factor() para este vetor.
+```{r fig.dim = c(4, 4)}
+p <- ggplot(data = BOD, mapping = aes(x = factor(Time), y = demand))
+p + geom_col()
+```
+
+Para mostrarmos a frequencia das observações para cada categoria usando ggplot (similar a função table em R Base), usamos a função geom_bar, sem informar o eixo y, pois esse automaticamente representará a frequência das observação.
+```{r fig.dim = c(4, 4)}
+p <- ggplot(mtcars, aes(x = cyl))
+p + geom_bar()
+```
+
+Novamente, veja a diferença entre variável continua e categórica. Ao utilizarmos a função factor(), automaticamente o eixo y representa a frequencia (número de linhas) de cada categoria da variável do eixo x.
+```{r fig.dim = c(4, 4)}
+p <- ggplot(mtcars, aes(x = factor(cyl)))
+p + geom_bar()
+```
+
+### Gráficos de histogramas {#anchor4}
+ 
+Diferente dos gráficos que vimos anteriormente, os histogramas são gráficos de 1 dimensão, que mostra a frequência de valores contínuos
+
+- Usando o R base
+```{r fig.dim = c(4, 4)}
+mtcars$mpg
+
+hist(mtcars$mpg)
+```
+
+Podemos especificar o número de barras do histograma com o argumento "breaks" Especificar o número de barra pode facilitar a visualização dos detalhes que queremos mostrar.
+```{r fig.dim = c(4, 4)}
+hist(mtcars$mpg, breaks = 4)
+hist(mtcars$mpg, breaks = 10)
+
+```
+
+- Usando o ggplot2 
+```{r fig.dim = c(4, 4)}
+p <- ggplot(mtcars, aes(x = mpg)) 
+p +  geom_histogram()
+```
+
+Também podemos ajustar o número de barras usando o argumento "bins"
+```{r fig.dim = c(4, 4)}
+p +  geom_histogram(bins = 5)
+```
+
+### Gráficos boxplot {#anchor5}
+ 
+Boxplot é um tipo de gráfico frequentemente utilizado para visualizar a distribuição das observações O Boxplot informa o valor máximo, mínimo, o primeiro (25%) e terceiro (75%) quartil, a mediana e se presente, os outliers
+ 
+  <center><img src="img/Boxplot.png" height="250px"></img></center>  
+  
+- Usando o R base
+```{r fig.dim = c(4, 4)}
+plot(ToothGrowth$supp, ToothGrowth$len)
+```
+
+- Usando o ggplot2 
+```{r fig.dim = c(4, 4)}
+p <- ggplot(ToothGrowth, aes(x = supp, y = len))
+p +  geom_boxplot()
+```
+---
+
+### Exercícios
+
+1. Usando o pacote R base ou ggplot (mas tente usar os dois), faça um gráfico para cada tipo de gráfico (dispersão, linha, barra, histograma, e boxplot), usando qualquer variável da nossa planilha “Alunos”. 
+
+2. Qual pacote de gráfico você se sentiu mais confortável para usar? Porque?
+
+---
+
+
+### Elementos visuais  {#anchor}
+
+Conforme discutimos, o pacote ggplot2, embora mais complexo, apresenta maior versatilidade para a elaboração de gráficos, portanto, utilizaremos este pacote daqui em diante.
+
+
+Vamos melhorar os gráficos, adicionando elementos visuais, tais como cores, tamanho, tipos, etc, de pontos, barras e linhas, que são os mais utilizados. Para inicialmente compreendermos o uso dos argumento visuais, vamos nos concentrar nos gráficos de dispersão
+
+
+```{r fig.dim = c(4, 4)}
+#install.packages("gcookbook")
+library(gcookbook) # Load gcookbook for the heightweight data set
+library(dplyr)
+
+head(heightweight) 
+
+p <- ggplot(heightweight, aes(x = ageYear, y = heightIn)) 
+p + geom_point()
+```
+
+Ao invez de utilizarmos pontos para indicar a dispersão dos valores, podemos alterar o formato visual com o argumento "shape"
+
+Veja as opções de formatos que existem
+
+<center><img src="img/shape.png" height="250px"></img></center>  
+```{r fig.dim = c(4, 4)}
+p + geom_point(shape = 2)
+p + geom_point(shape = 6)
+```
+
+Também podemos alterar o tamanho dos pontos, usando o argumento "size"
+```{r fig.dim = c(4, 4)}
+p + geom_point(size = 5) 
+```
+
+Similarmente, podemos alterar a cor com o argumento "color" ou "colour", que pode ser um número ou um caractere. Podemos também diferenciar a color entre a linha do ponto e o preenchimento do ponto. No entanto, a alteração do preenchimento só é possivel para os pontos com shape entre 21–25 
+
+<center><img src="img/color.png" height="400px" width = "400px"></img></center> 
+```{r fig.dim = c(4, 4)}
+p + geom_point(shape = 1, color = 5)
+p + geom_point(shape = 1, colour = "red")
+p + geom_point(shape = 1, colour = "black", fill = "red")
+p + geom_point(shape = 21, colour = "black", fill = "red")
+```
+
+Por fim, podemos adicionar todos estes elementos simultaneamente
+```{r fig.dim = c(4, 4)}
+p + geom_point(shape = 5, size = 3, color = 4)
+```
+
+Aprendemos que para definirmos elementos visuais de um gráfico adicionamos comandos dentro da função geom_(). Porém, nem todos os gráficos suportam os mesmo comandos. Por exemplo, não é possível alterar o formato do ponto em um gráfico de linhas
+
+
+Vamos ver alguns elementos visuais em outros tipos de gráficos. Em graficos de linha, podemos mudar o tipo de linha (linetype), a largura (size) e a cor(color)
+```{r fig.dim = c(4, 4)}
+BOD
+p <- ggplot(BOD, aes(x = Time, y = demand))
+
+p + geom_line(linetype = "dashed", size = 1, color = "blue")
+
+p + geom_line(color = "darkgreen", size = 1.5)
+```
+
+Um argumento bastante interessante é a transparência (alpha), que pode ser fundamental para termos uma melhor interpretação e visualização do gráfico. Veja, por exemplo, a diferença entre estes gráficos de pontos.
+```{r fig.dim = c(4, 4)}
+diamonds
+p <- ggplot(diamonds, aes(x = carat, y = price))
+
+p + geom_point()
+
+p + geom_point(alpha = .1)
+
+p + geom_point(alpha = .01)
+```
+
+Similarmente, podemos usar o argumento alpha para os gráficos de linha
+```{r fig.dim = c(4, 4)}
+p <- ggplot(BOD, aes(x = Time, y = demand))
+
+p + geom_line(color = "darkgreen", size = 1.5)
+
+p + geom_line(color = "darkgreen", size = 1.5, alpha = 0.5)
+```
+
+Para gráficos de barras, os argumentos relacionados aos elementos visuaissão similares aos outros gráficos
+```{r fig.dim = c(4, 4)}
+pg_mean
+
+p <- ggplot(pg_mean, aes(x = group, y = weight)) 
+
+p + geom_col(color = "black", fill = "lightblue")
+```
+
+Portanto, podemos concluir que as regras para elementos visuais que aprendemos nos gráficos de dispersão também se aplicam nos outros tipos de gráficos. Porém, alguns elementos diferem dependendo da função geom_() sendo utilizada. Assim, fica claro que as regras de uso e até mesmo os argumentos são muito similares independente do tipo de gráfico a ser feito.
+
+
+---
+
+# Exercícios 
+
+3. Busque no seu script os códigos utilizados nos gráficos criados no exercício anterior. Adicione elementos visuais de cor, tamanho, formato e preenchimento, conforme vimos na aula.

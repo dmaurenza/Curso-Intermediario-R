@@ -1,0 +1,301 @@
+---
+title: "Gráficos"
+output: html_document
+
+---
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 16px;
+}
+pre {
+  font-size: 16px
+}
+h1,h2,h3,h4,h5,h6{
+  font-size: 24pt;
+}
+</style>
+
+Nesta aula vamos adicionar complexidades aos nossos gráficos, pois nem sempre o que aprendemos até agora é suficiente para ilustrarmos os nossos dados como desejamos. Veremos como configurar outros elementos de um gráfico, tais como os eixos e a legenda.
+
+
+# Elementos da Aula
+
+1. [Função aes()](#anchor1)
+2. [Funções de texto e rótulos](#anchor2)
+3. [Funções scale](#anchor3)
+
+## Função aes() {#anchor1}
+## Funções de texto e rótulos {#anchor2}
+Digamos que queremos fazer um gráfico de dispersão que demonstre a relação entre a altura e o peso dos alunos da turma (tabela alunos). Porém, queremos diferenciar essa relação entre homens e mulheres. Para tanto, precisamos incluir uma nova variável ao nosso gráfico, neste caso, "sexo", que informe para cada ponto se a relação entre altura e peso é de um homem ou uma mulher
+
+Para fazermos este tipo de gráfico, vamos usar a habilidade do ggplot que permite incluir elementos visuais dentro da função aes(). Vamos ver alguns exemplos utilizando os dados gapminder, que mostra valores de renda per capita, expectativa de vida e tamanho populacional para diversos paises e continentes
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "Copy code", tooltip_success = "Copied!")
+```
+
+```{r fig.dim = c(6, 4) }
+library(ggplot2)
+library(gapminder)  
+
+p <- ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p + geom_point() 
+
+# Interpretação: a expectativa de vida aumenta abruptamente com o aumento da renda per capita, até um teto de idade (entre 70 e 80 anos)
+```
+
+Incluind uma nova variável à função aes() dentro da função geom_(), podemos diferenciar a relação entre espectativa de vida e renda per capita de cada continente. A função aes() esta dentro do argumento mapping, portanto ela mapeia as variáveis dos seus dados para as propriedades do gráfico. Assim, podemos também usar as variáveis dos seus dados para mapear os elementos visuais.
+
+```{r fig.dim = c(6, 4) }
+p + geom_point(aes(color = continent))
+
+# porém, há diferenças entre os continentes
+```
+
+Notem que elementos visuais que utilizam a tabela de dados devem estar dentro da função aes(). Se utilizarmos fora da função aes() temos um erro.
+
+```{r fig.dim = c(6, 4), error=TRUE}
+p + geom_point(color = continent)
+
+```
+
+Como vimos, as funções geom_() podem usar diversos argumentos que afetaram elementos visuais, porém eles podem ser utilizados dentro ou fora da função aes(), dependendo do que desejamos. Se utilizamos informações que estão dentro da tabela de dados, temos que usar estes argumentos dentro de aes()
+
+```{r fig.dim = c(6, 4) }
+p + geom_point(color = "purple")
+
+p + geom_point(color = "purple", size = 5)
+
+p + geom_point(color = "purple", shape = 3)
+
+```
+
+Ao adicionarmos uma nova variável na função aes(), podemos manter os outros argumentos fora da função aes()
+
+```{r fig.dim = c(6, 4) }
+p + geom_point(aes(color = continent))
+
+p + geom_point(aes(color = continent), shape = 3, size = 2)
+
+```
+
+Neste exemplo, "continent" é uma variável categórica. Veja o que acontece se usarmos uma variável numérica
+
+```{r fig.dim = c(6, 4) }
+p + geom_point(aes(color = pop), size = 2)
+
+p + geom_point(aes(size = pop))
+
+```
+
+Veja um outro exemplo, desta vez em um gráfico de linhas
+
+```{r fig.dim = c(6, 4) }
+
+library(gcookbook) 
+
+
+p <- ggplot(tg, aes(x = dose, y = length)) 
+
+p + geom_line(aes(colour = supp))
+
+p +  geom_line(aes(linetype = supp))
+
+p +  geom_line(aes(linetype = supp), color = "red")
+
+```
+
+Podemos inclusive utilizar a nova variável para diferenciar mais do que um elemento visual:
+```{r fig.dim = c(6, 4) }
+p +  geom_line(aes(linetype = supp, color = supp, linewidth = supp))
+
+```
+
+Notem que a legenda só aparece quando elementos visuais são adicionados a nova variável dentro da função aes(). Mais adiante veremos como fazer ajustes na legenda.
+
+
+Vamos ver um exemplo com gráficos de barra 
+```{r fig.dim = c(6, 4) }
+library(gcookbook)  
+cabbage_exp
+
+p <- ggplot(data = cabbage_exp, aes(x = Date, y = Weight))
+
+p + geom_col(aes(fill = Cultivar))
+
+```
+
+Podemos definir dois layouts para os gráficos de barra
+
+```{r fig.dim = c(6, 4) }
+p + geom_col(aes(fill = Cultivar), position = "dodge")
+
+p + geom_col(aes(fill = Cultivar), position = "stack")
+
+```
+
+Bem como outros elementos das barras
+
+```{r fig.dim = c(6, 4) }
+p + geom_col(aes(fill = Cultivar), position = "dodge", color = "black")
+
+p + geom_col(aes(fill = Cultivar), position = "dodge", color = "black", linewidth = 3)
+
+```
+ Reparem que nos gráficos de barras, "color" representa a cor da linha. Para modificar a cor de preenchimento, usamos o argumento "fill"
+
+
+
+## Funções de texto e rótulos {#anchor2}
+
+Podemos melhorar ainda mais a visualização dos gráficos utilizando a função labs(). Esta função permite modificar os eixo, título, subtitulo e a fonte dos dados
+```{r fig.dim = c(6, 4) }
+
+p + geom_col(aes(fill = Cultivar), position = "dodge")+
+  labs(x = "Dias de cultivo",
+       y = "Peso (kg)",
+       title = "Relacao peso / dias de cultivo",  # não esta configurado para aceitar acentuação
+       subtitle = "subtitulo",
+       caption = "Fonte: R base") 
+```
+
+Em gráficos de barra, adicionar textos fornece maior detalhamento dos valores da barra. Existem diversos ajustes que podem ser feitos, e dependendo do ajuste, temos que adicionar o argumento group dentro da função aes()
+ 
+
+```{r fig.dim = c(6, 4) }
+p + geom_col(aes(fill = Cultivar), position = "dodge")+
+  labs(x = "Dias de cultivo",
+       y = "Peso (kg)",
+       title = "Relacao peso / dias de cultivo",  # não esta configurado para aceitar acentuação
+       subtitle = "subtitulo",
+       caption = "Fonte: R base")+
+  geom_text(aes(label = Weight, group = Cultivar),
+            color = "black", 
+            size = 3,
+            vjust = -0.3,
+            position = position_dodge(0.9))
+
+```
+
+Por fim, vamos alterar as escalas dos eixos. Neste exemplo, como utilizamos um gráfico de barras onde o eixo x é categórico, só podemos alterar a escala do eixo y
+
+```{r fig.dim = c(6, 4) }
+
+p + geom_col(aes(fill = Cultivar), position = "dodge")+
+  labs(x = "Dias de cultivo",
+       y = "Peso (kg)",
+       title = "Relacao peso / dias de cultivo",  # não esta configurado para aceitar acentuação
+       subtitle = "subtitulo",
+       caption = "Fonte: R base")+
+  geom_text(aes(label = Weight, group = Cultivar),
+            color = "black", 
+            size = 3,
+            vjust = -0.3,
+            position = position_dodge(0.9))+
+  ylim(c(0, 2))
+
+p + geom_col(aes(fill = Cultivar), position = "dodge")+
+  labs(x = "Dias de cultivo",
+       y = "Peso (kg)",
+       title = "Relacao peso / dias de cultivo",  # não esta configurado para aceitar acentuação
+       subtitle = "subtitulo",
+       caption = "Fonte: R base")+
+  geom_text(aes(label = Weight, group = Cultivar),
+            color = "black", 
+            size = 3,
+            vjust = -0.3,
+            position = position_dodge(0.9))+
+  ylim(c(0, 5))
+
+```
+
+---
+
+# Exercicios
+
+1. Crie um gráfico de pontos utilizando a tabela Alunos, sendo o eixo-x a idade dos alunos e o eixo-y o peso
+
+2. Adicione cores distintas em função da variável sexo
+
+3. Ajuste o tamanho dos pontos de acordo com a altura dos alunos
+
+4. Melhor o gráfico. Nomeie o eixo x como "Idade (anos), o eixo-y como "Peso (kg)", e o título do gráfico como "Perfil da turma"
+
+5. Ajuste os limites dos eixos x e y.
+
+---
+
+
+# Funções scale {#anchor3}
+
+Vamos adicionar um pouco mais de complexidades ao nosso gráfico, a fim de torná-lo mais elegante. Digamos que as cores usadas automaticamente pelo ggplot não são muito agradáveis. Vamos ver como podemos alterar manualmente as cores das barras usando uma função chamada "scale_fill_manual()
+
+```{r fig.dim = c(6, 4) }
+
+p <- ggplot(data = cabbage_exp, aes(x = Date, y = Weight))
+
+p + geom_col(aes(fill = Cultivar)) +
+  scale_fill_manual(values=c("darkgreen", "darkblue"))
+
+```
+
+Similarmente, podemos alterar as cores de linhas e pontos usando a função "scale_color_manual. 
+```{r fig.dim = c(6, 4) }
+p <- ggplot(tg, aes(x = dose, y = length)) 
+
+p + geom_line(aes(colour = supp), size = 4)+ # gráfico de linhas
+  scale_color_manual(values=c("darkgreen", "darkblue"))
+
+
+p <- ggplot(data = gapminder,aes(x = gdpPercap, y = lifeExp))
+
+p + geom_point(aes(color = continent))+ # gráfico de pontos
+  scale_color_manual(values=c("darkgreen", "darkblue", "yellow", "black", "red"))
+
+```
+
+Importante! As funções scale_fill_manual e scale_color_manual só funcionam corretamente se dentro da função geom_() foram utilizados os argumentos "fill" e "color", respectivamente, dentro da função aes(). Pense na racionalidade por traz disso. Ao utilizarmos a função scale..., estamos modificando parâmetros de algo já existente. Se não incluímos antes, não há elementos para serem modificados
+
+```{r fig.dim = c(6, 4) }
+
+p <- ggplot(data = cabbage_exp, aes(x = Date, y = Weight))
+p + geom_col(aes(color = Cultivar)) 
+
+p + geom_col(aes(color = Cultivar)) +
+  scale_fill_manual(values=c("darkgreen", "darkblue"))
+
+p + geom_col(aes(fill = Cultivar)) 
+
+p + geom_col(aes(fill = Cultivar)) +
+  scale_fill_manual(values=c("darkgreen", "darkblue"))
+
+p + geom_col(aes(color = Cultivar)) 
+
+p + geom_col(aes(color = Cultivar)) +
+  scale_color_manual(values=c("darkgreen", "darkblue"))
+```
+
+
+Enfim, vamos ver o nosso gráfico final
+
+```{r fig.dim = c(6, 4) }
+
+p <- ggplot(data = cabbage_exp, aes(x = Date, y = Weight))
+p + geom_col(aes(fill = Cultivar), position = "dodge", color = "black")+
+  labs(x = "Dias de cultivo",
+       y = "Peso (kg)",
+       title = "Relacao peso / dias de cultivo",  # não esta configurado para aceitar acentuação
+       subtitle = "subtitulo",
+       caption = "Fonte: R base")+
+  geom_text(aes(label = Weight, group = Cultivar),
+            color = "black", 
+            size = 3,
+            vjust = -0.3,
+            position = position_dodge(0.9))+
+  ylim(c(0, 4))+
+  scale_fill_manual(values=c("darkgreen", "darkblue"))
+```
+  

@@ -1,0 +1,116 @@
+---
+title: "Gráficos"
+output: html_document
+
+---
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 16px;
+}
+pre {
+  font-size: 16px
+}
+h1,h2,h3,h4,h5,h6{
+  font-size: 24pt;
+}
+</style>
+
+Nesta aula vamos aprender a usar a função theme(). A função theme() tem por objetivo ajustar/customizar elementos do gráficos não relacionados aos dados. Podemos ajustar o painel onde o gráfico esta inserido, o fundo do gráfico, a legenda, os eixos titulos, etc. 
+
+
+# Elementos da Aula
+
+1. [Funções theme](#anchor1)
+2. [Multiplos gráficos](#anchor2)
+
+
+## Funções theme {#anchor1}
+
+Dentro da função theme(), utilizamos o argumento específico que desejamos alterar, juntamente com a função element() correspondente ao ajuste desejado. Para ilustrarmos mais didaticamente a relação entre a função theme() e a função element, vamos nomear como "p" todo o gráfico da aula passada
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "Copy code", tooltip_success = "Copied!")
+```
+
+```{r fig.dim = c(6, 4) }
+library(ggplot2)
+library(gcookbook)
+p <- ggplot(data = cabbage_exp, aes(x = Date, y = Weight))+
+  geom_col(aes(fill = Cultivar), position = "dodge", color = "black")+
+  labs(x = "Dias de cultivo",
+       y = "Peso (kg)",
+       title = "Relacao peso / dias de cultivo",  # não esta configurado para aceitar acentuação
+       subtitle = "subtitulo",
+       caption = "Fonte: R base")+
+  geom_text(aes(label = Weight, group = Cultivar),
+            color = "black", 
+            size = 3,
+            vjust = -0.3,
+            position = position_dodge(0.9))+
+  ylim(c(0, 4))+
+  scale_fill_manual(values=c("darkgreen", "darkblue"))
+p
+```
+
+Existem 4 elementos theme fundamentais. 
+
+1. element_text() - Modifica rótulos e cabeçarios. Podemos controlar a fonte, cor, tamanho, ajustes horizontais e verticas
+```{r fig.dim = c(6, 4) }
+p + theme(plot.title = element_text(size = 6))
+p + theme(plot.title = element_text(face = "bold", colour = "red"))
+p + theme(plot.title = element_text(hjust = 1))
+p + theme(axis.text = element_text(size = 25))
+p + theme(axis.title = element_text(size = 25))
+
+```
+
+2. element_line() - Modifica parâmetros das linhas, tais como cor, tamanho e estilo
+```{r fig.dim = c(6, 4) }
+p + theme(panel.grid.major = element_line(colour = "black"))
+p + theme(panel.grid.major = element_line(linewidth = 2))
+p + theme(panel.grid.major = element_line(linetype = "dotted"))
+p + theme(panel.grid.major = element_line(linetype = "dotted"))
+
+```
+
+3. element_rect() - Modifica ajustes de retangulos, muito utilizado para modificar o fundo dos gráficos, e outros parâmetros de área
+```{r fig.dim = c(6, 4) }
+p + theme(plot.background = element_rect(fill = "grey80", colour = NA))
+p + theme(plot.background = element_rect(colour = "red", size = 2))
+p + theme(panel.background = element_rect(fill = "linen"))
+
+```
+
+4. element_blank() - Modifica para "Nada". Usado quando não queremos fazer ajustes ou não queremos alocar espaços
+
+```{r fig.dim = c(6, 4) }
+
+p + theme(panel.background = element_blank())
+p + theme(axis.title.x = element_blank())
+p + theme(axis.title.y = element_blank())
+p + theme(axis.line = element_line(colour = "grey50"))
+p + theme(axis.line = element_blank())
+```
+
+Similar ao que vimos anteriormente, podemos incluir varios argumentos da função theme no mesmo gráfico
+
+```{r fig.dim = c(6, 4) }
+
+p + theme(plot.title = element_text(hjust = 0.5, colour = "grey25"),
+          panel.grid.major.y = element_line(colour = "grey"),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = "black"),
+          legend.position = "right")
+```
+
+ Veja em help a diversidade de funcionalidades que a função theme fornece, e  [*aqui*](https://ggplot2-book.org/polishing.html#theme-elements) uma lista de argumentos que podem ser usados na função theme(), juntamente com a função element() correspondente
+
+---
+
+Exercícios
+
+1. aksjjks
