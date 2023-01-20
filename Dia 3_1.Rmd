@@ -1,6 +1,7 @@
 ---
 title: "Função loop For"
-
+author: "Daniel Maurenza de Oliveira"
+date: "https://github.com/dmaurenza/Curso-Intermediario-R"
 output: html_document
 ---
 <style type="text/css">
@@ -18,22 +19,21 @@ h1,h2,h3,h4,h5,h6{
 }
 </style>
 
+Nesta aula vamos aprender a usar uma das funções loop. As funções loop são usadas para aplicar a mesma tarefa para um dado conjunto de dados de acordo com os níveis de um fator. Existem diversas funções loop, mas nós vamos focar na função loop "for",
+
 # Elementos da Aula
 
-1. [Loop "for" em vetores](#anchor1)
-2. [Loop "for" em dataframes](#anchor2)
+1. [Loop "for" em Vetores](#anchor1)
+2. [Loop "for" em Dataframes](#anchor2)
 
 
-As funções loop são usadas para aplicar a mesma tarefa para um dado conjunto de dados de acordo com os níveis de um fator. Existem diversas funções loop, mas nós vamos focar na função loop "for",
-
-
-## Loop "for" em vetores {#anchor1}
+## Loop "for" em Vetores {#anchor1}
 
 As funções loop servem para que um determinado comando (ou conjunto de comandos) aplicado para um nível de um fator seja executado repetidamente aos outros níveis. É como se para cada nível de um fator elas aplicassem uma tarefa, fossem para outro nível, repetissem a mesma tarefa; corresse para o próximo nível, repetisse a mesma tarefa; por aí vai… 
 
 A função loop "for" funciona da seguinte maneira:  for(var in seq) {command}. Ou seja, para cada valor de "var" dentro de "seq", o R executa os comandos que estão entre as chaves.
 
-Nesta prática, vamos pedir que o R print (imprimir) o nome de cada aluno da planilha alunos
+No nosso primeiro contato com a esta função, vamos pedir que o R print (imprimir) números em uma sequência.
 
 
 ```{r klippy, echo=FALSE, include=TRUE}
@@ -44,12 +44,16 @@ klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "
 for (i in 1:10) {
   print(i)
 }
+```
 
-# vamos ver o que o for está fazendo em câmera lenta
+Vamos ver o que o "for" está fazendo em câmera lenta
+```{r}
+
 for (i in 1:10) {
   print(i)
   Sys.sleep(time = 1)
 }
+
 ```
 
 Um exemplo com letras
@@ -80,6 +84,7 @@ for (i in alunos$nome){
 }
 
 ```
+
 Ou seja, pedimos ao R para na linha i, printar o nome i da planilha alunos. Neste caso, o tamanho de i é igual ao tamanho de alunos$nome
 
 
@@ -104,8 +109,8 @@ idade <- alunos$idade
 
 idade_x2 <- numeric()
 
-for (i in 1:length(idade)) { # será o i = 1, i = 2, i = 3, i = 4, i = 5
-  idade_x2[i] <- idade [i] * 2 # realiza a operação e armazena no vetor resu
+for (i in 1:length(idade)) { # será o i = idade [1], i = idade [2], i = idade [3], i = idade [n]
+  idade_x2[i] <- idade [i] * 2 # realiza a operação e armazena no vetor idade_x2
 } # fim da função
 
 idade
@@ -113,19 +118,22 @@ idade_x2
 
 ```
 Para não ficar dúvidas, vamos fazer um “filme” para demonstrar o que a função "for" está fazendo.
+
 ```{r}
 plot(0:10,0:10, type="n") # plota um gráfico vazio 
+
 for (i in 1:9) {
   text(i,i, paste("Passo", i)) # plota um texto no gráfico
   Sys.sleep(1) ## retarda os passos em 1 s
 }
+
 ```
 
 ---
 
 # Exercícios
 
-1. A sequência de Fibonacci é uma sequência famosa na matemática. Os dois primeiros números da sequência são [1, 1]. Os números subsequentes são compostos pela soma dos dois números anteriores. Assim, o terceiro número da sequência de Fibonacci é 1 + 1 = 2, o quarto é 1 + 2 = 3, e assim por diante.
+1. A sequência de Fibonacci é uma sequência numérica conhecida na matemática. Os dois primeiros números da sequência são [1, 1]. Os números subsequentes são compostos pela soma dos dois números anteriores. Assim, o terceiro número da sequência de Fibonacci é 1 + 1 = 2, o quarto é 1 + 2 = 3, e assim por diante.
 Utilize a função loop "for" para descobrir os 12 primeiros números da sequência de Fibonacci
 
 
@@ -139,9 +147,9 @@ Utilize a função loop "for" para descobrir os 12 primeiros números da sequên
 
 ---
 
-#### Loop "for" em dataframes {#anchor2}
+#### Loop "for" em Dataframes {#anchor2}
 
-A sequencia lógica para usarmos a função loop "for" em dataframes é similar à que usamos em vetores, porém, utilizando a indexação de dataframes .
+A sequência lógica para usarmos a função loop "for" em dataframes é similar à que usamos em vetores, porém, utilizando a indexação de dataframes .
 
 ```{r}
 nome_pe_mao <- data.frame(nome = NA, pe = NA, mao = NA)
@@ -165,6 +173,7 @@ njogos <- 20
 
 numeros <- matrix(NA, nrow = 6, ncol = njogos)
 ```
+
 Agora vamos sortear 20 jogos com 6 números que varia de 1 a 60
 ```{r}
 for (i in 1:njogos) { # determina o número total de jogos sorteados
@@ -175,6 +184,7 @@ for (i in 1:njogos) { # determina o número total de jogos sorteados
 numeros
 
 ```
+
 Vamos ver o que aconteceu
 ```{r results='hide'}
 numeros <- matrix(NA, nrow = 6, ncol = njogos) # criar a matriz para armazenar os jogos
@@ -189,130 +199,11 @@ for (i in 1:njogos) { # determina o número total de jogos sorteados
 numeros
 ```
 
-```{r}
+Ou seja, foram amostrados aleatoriamente 6 números que variam de 1 a 60, e armazenados para cada coluna i do dataframe numeros ([,i]).
 
-```
+---
 
-```{r}
+# Exercícios
 
-```
 
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
+6. Utilizando as funções "For" e "write_csv", crie um arquivo .csv para cada coluna da planilha Alunos. Dica!!! utilize a função "paste" para nomear os arquivos que serão salvos em cada rodada do loop. 

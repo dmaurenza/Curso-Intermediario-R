@@ -1,8 +1,7 @@
 ---
-title: "Leitura e Armazenamento dos dados"
-# subtitle: "Nicholas A. C. Marino"
-# author: "nac.marino@gmail.com"
-# date: "github.com/nacmarino/introducaoR"
+title: "Revisão de conceitos básicos"
+author: "Daniel Maurenza de Oliveira"
+date: "https://github.com/dmaurenza/Curso-Intermediario-R"
 output: html_document
 ---
 <style type="text/css">
@@ -20,6 +19,9 @@ h1,h2,h3,h4,h5,h6{
 }
 </style>
 
+
+Nesta aula faremos uma revisão sobre conceitos e operacionalização de comandos essenciais para o bom uso do R. Inicialmente, veremos que o R funciona como uma calculadora. Depois, vamos rever as classes dos objetos que podem ser criados no R, tais como vetores, matrizes, dataframes e listas
+
 # Elementos da Aula
 
 1. [Operações matemáticas](#anchor1)
@@ -31,7 +33,7 @@ h1,h2,h3,h4,h5,h6{
 
 ## Operações matemáticas {#anchor1}
 
-No R podemos fazer operações matemáticas similares aos encontrados em uma calculadora convencional
+O R funciona como uma calculadora fazendo operações matemáticas
 
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "Copy code", tooltip_success = "Copied!")
@@ -61,22 +63,41 @@ sqrt(x = 15)
 pi 
 
 ```
-Na programação nomeamos os objetos para que possamos utiliza-los posteriormente. Você pode nomear um objeto através dos operadores "<-" ou "=", A primeira forma é a mais fácil de ser interpretada, e não se confunde com "=" utilizado nos argumentos, além de haver o atalho "Alt" + "-".
+Na programação nomeamos os objetos para que possamos utilizá-los posteriormente. Você pode nomear um objeto através dos operadores "<-" ou "=". A primeira forma é a mais fácil de ser interpretada, e não se confunde com "=" utilizado nos argumentos, além de haver o atalho "Alt" + "-". Para nomear um objeto, não inicia-se com números e não utiliza-se espaços entre as letras. Além disso, o R é uma programação "case-sensitive", ou seja, letras maiúsculas diferem de letras minúsculas
 ```{r}
 resultado <- 5 + 5
+
 resultado
 
 ```
 
+O uso de "==" difere de "=". Se você escrever n == 2, você esta perguntando se "n" é igual a "2". Quando você escreve n = 2, você esta mudando o valor de n para 2
+
+"==" é um operador lógico, e portanto o resultado é um objeto chamado "logical" (também conhecido como booleano).
+
+```{r}
+n = 2
+
+n
+
+class(n)
+
+n==2
+
+class(n==2)
+```
+
 ## Classes de objetos {#anchor2}
 
-Existem diversas classes de objetos que podemos criar, mas os mais comumente utilizadas são "Numeric", "Character", "Interger", "logical" e "double". Vamos ver na prática essas classes, como perguntamos ao R qual é a classe de um objeto, e como alteramos a classe de um objeto
+Existem diversas classes de objetos, mas os mais comuns são "Numeric", "Character", "Interger", "logical" e "double". Vamos ver na prática essas classes, como perguntamos ao R qual é a classe de um objeto, e como alteramos a classe de um objeto
 
 ```{r}
 class(x = 5)
+
 class(resultado)
 
 ola <- "Olá alunos Bud!"
+
 class(x = ola )
 
 # o 5 é um número?
@@ -111,25 +132,31 @@ b <- is.double(x = 5L)
 
 ```
 
-Logical, também conhecido como boolean, é uma classe de objeto muito usado nas indexações (veremos indexações mais adiante)
+Objetos da classe "Logical", também conhecido como "boolean", é muito usado nas indexações (veremos indexações mais adiante). Objetos "Logical" indicam se o valor é verdadeiro (TRUE) ou falso (FALSE)
 
 ```{r}
 
 c <- 5
+
 is.logical(a)
+
 is.logical(b)
+
 is.logical(c)
 
 class(c)
 
 ```
 
-Nós podemos forçar/converter/transformar uma classe de um objeto, usando "as."
+É possível forçar/converter/transformar uma classe de um objeto, usando "as." antes da classe de objeto desejada. Porém, nem todas as conversões são possíveis. O número 5 pode ser convertido em um caractere 5, mas o caractere x não pode ser transformado em número
 
 ```{r}
 inteiro <- is.integer(x = 5) 
+
 class(inteiro)
+
 inteiro <- as.integer(x = 5)
+
 class(inteiro)
 
 # Outro exemplo
@@ -137,10 +164,20 @@ class(inteiro)
 class(5)
 
 char <- as.character(5)
+
 class(char)
 
 char_num <- as.numeric(char)
+
 class(char_num)
+
+char <- as.character("letra")
+
+class(char)
+
+as.numeric(char)
+
+class(char)
 
 ```
 
@@ -159,16 +196,20 @@ Dica: Utilize parenteses para facilitar a interpretação.
 
 ### Vetores {#anchor3}
 
-Até o momento estamos trabalhando com objetos que armazenam e/ou assumem um único valor, mas muitas vezes estamos interessados em armazenar um conjuntos de valores.
+Até o momento vimos como armazenar em um objeto um único valor, sejá número, letra ou valores boolean. Porém, a maioria das vezes estamos interessados em armazenar um conjuntos de valores.
 
-Podemos juntar diferentes valores  através da função "c", que refere-se à abreviação de "concatenar". Para este objeto, damos o nome de vetor.
+Para juntar juntar diferentes valores usa-se a função "c", que refere-se à abreviação de "concatenar". Para este objeto, damos o nome de vetor. Consequentemente, um vetor pode ser "numeric", "charactere" ou "logical". 
 
 ```{r}
-c(1, 2, 3, 4, 5, 6)
+vetor <- c(1, 2, 3, 4, 5, 6)
+
+vetor
+
+class(vetor)
 
 ```
 
-Vamos por exemplo criar um objeto com a idade de um conjunto de pessoas
+Para exemplificar, vamos criar um objeto com a idade de um conjunto de pessoas
 
 
 ```{r}
@@ -187,16 +228,18 @@ Adicionando valores ao vetor
 
 ```{r}
 idoso <- 70
-idade
-idoso
-idade <- c(idade, idoso)
 
+idade
+
+idoso
+
+idade <- c(idade, idoso)
 
 is.vector(idade)
 
 ```
 
-Criando um vetor concatenando objetos da classe caractere
+Criando um vetor concatenando objetos da classe "character"
 
 ```{r}
 
@@ -214,6 +257,7 @@ limao
 
 frutas <- c(frutas, limao)
 
+frutas
 ```
 
 Um valor da classe "numeric" pode ser transformado em "character", mas um "character" não pode ser transformado em um "numeric"
@@ -224,10 +268,12 @@ idade_fruta <- c(idade, frutas)
 class(idade_fruta)
 
 is.vector(idade_fruta) 
+
 ```
 
 ### Matrizes {#anchor4}
-Um conjunto de vetores pode ser organizado dentro de uma matriz, criada a partir da função "matrix". A matriz pode ser criada a partir de um vetor, determinando quantas linhas e quantas colunas ela deve assumir.Uma matriz pode ser preenchida por linhas (byrow = TRUE) ou por colunas (byrow = FALSE)
+
+Um conjunto de vetores pode ser organizado dentro de uma matriz, criada a partir da função "matrix". A matriz é criada determinando quantas linhas e quantas colunas ela deve assumir. Uma matriz pode ser preenchida por linhas (byrow = TRUE) ou por colunas (byrow = FALSE)
 
 ```{r}
 matrix(idade)
@@ -241,14 +287,17 @@ matrix(idade, nrow = 2, ncol = 3, byrow = T)
 matrix(idade, nrow = 2, ncol = 3, byrow = F)
 ```
 
-Você também pode montar uma matriz a partir de dois ou mais vetores:
+A matriz é umaa tabela bi-dimensional, portanto é possível criar uma matriz a partir de dois ou mais vetores, desde que os vetores tenham o mesmo tamanho (número de valores):
 
 ```{r}
 altura <- c(1.75, 1.56, 1.67, 1.70, 1.62, 1.77)
+
 altura
+
 idade
 
 idade_altura <- matrix(data = c(idade, altura), nrow = 6, ncol = 2, byrow = FALSE)
+
 idade_altura
 
 
@@ -256,14 +305,13 @@ idade_altura_fruta <- matrix(data = c(idade_altura, frutas),nrow = 6, ncol = 3, 
 
 # podemos omitir algumas informações.
 matrix(data = c(idade_altura, frutas),nrow = 6, byrow = FALSE)
-?matrix
 
 matrix(data = c(idade_altura, frutas))
 
 ```
 
-### Dataframes {#anchor4}
-O tipo de objeto mais utilizado nas análises de dados são os dataframe, criado pela função data.frame. Um dataframe é uma tabela similar às que criamos em excel, com duas dimenções, as linhas e as colunas. Ao contrário da matriz, o dataframe pode comportar diferentes tipos de objetos, desde que esteja em colunas distintas.
+### Dataframes {#anchor5}
+Dataframe é o tipo de objeto mais utilizado nas análises de dados, criado pela função "data.frame". Um dataframe é uma tabela similar às que criamos em excel, com duas dimensões, as linhas e as colunas. Ao contrário da matriz, o dataframe pode comportar diferentes tipos de objetos, desde que esteja em colunas distintas.
 
 
 ```{r}
@@ -289,15 +337,22 @@ Veja que é possível nomear as linhas
 nome_linha <- c("a", "b", "c", "d", "e", "f")
 
 dados <- data.frame(idade, nomes, logico, row.names = nome_linha)
-dados
+
+# outra forma de nomear linhas
+dados2 <- data.frame(idade, nomes, logico)
+
+rownames(dados2) <- nome_linha
+
+dados2
 
 ```
-Existem outras formas para criarmos um dataframe
 
+Existem outras formas para criarmos um dataframe
 
 ```{r}
 
 df_idade_altura <- as.data.frame(idade_altura)
+
 df_idade_altura
 
 ```
@@ -307,26 +362,17 @@ Ué, porque apareceram nomes de colunas V1 e V2? Para criarmos tanto matrix como
 ```{r}
 
 matrix(data = c(idade_altura),ncol = 2, byrow = FALSE)
-matrix(data = c(idade_altura),ncol = 3, byrow = FALSE)
 
 ```
 
-Podemos solucionar este problema com a função "colnames"
+Para nomear as colunas de um dataframe ou matriz podemos usar a função "colnames"
 
 ```{r}
 
-colnames(idade_altura)
-
-colnames(idade_altura) <- c("idade", "altura")
-idade_altura
-
-```
-
-Similarmente, podemos nomear as colunas do data.frame
-
-```{r}
 colnames(df_idade_altura)
+
 colnames(df_idade_altura) <- c("idade", "altura")
+
 df_idade_altura
 
 ```
@@ -336,27 +382,41 @@ Podemos adicionar novas colunas e linhas, por meio das funções cbind e rbind, 
 ```{r}
 # "cbind" adiciona colunas
 df_idade_altura_frutas_cbind <- cbind(df_idade_altura, frutas)
+
 df_idade_altura_frutas_cbind
 
+
 # "rbind" adiciona linhas
+
+
 df_idade_altura_frutas_rbind <- rbind(df_idade_altura_frutas_cbind, c(25, 1.80, "melancia"))
+
 df_idade_altura_frutas_rbind
 
 ```
 
 
-### Listas {#anchor5}
-Uma outra forma de armazenar dados é através da criação de listas com a função "list". Cada elemento de uma lista pode ser um vetor, matriz ou outro tipo de objeto (inclusive, outra lista). A ideia central da lista é que ela salva cada elemento em uma ‘dimensão’ diferente.
+### Listas {#anchor6}
+
+Uma outra forma de armazenar dados é através da criação de listas com a função "list". Cada elemento de uma lista pode ser um vetor, matriz ou outro tipo de objeto (inclusive, outra lista). A idéia central da lista é que ela guarda cada elemento em uma ‘dimensão’ diferente.
+
 
 
 ```{r}
+
 idade
+
 nomes
+
 dados
+
 df_idade_altura
 
 coisas <- list(idade, nomes, dados, df_idade_altura)
+
 coisas
+
+#rm(list=ls())
 ```
 ---
 

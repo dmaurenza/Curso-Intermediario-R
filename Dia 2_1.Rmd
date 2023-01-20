@@ -1,8 +1,7 @@
 ---
-title: "Revisão de conceitos básicos"
-# subtitle: "Nicholas A. C. Marino"
-# author: "nac.marino@gmail.com"
-# date: "github.com/nacmarino/introducaoR"
+title: "Leitura e Armazenamento dos dados"
+author: "Daniel Maurenza de Oliveira"
+date: "https://github.com/dmaurenza/Curso-Intermediario-R"
 output: html_document
 ---
 <style type="text/css">
@@ -20,6 +19,8 @@ h1,h2,h3,h4,h5,h6{
 }
 </style>
 
+Nesta aula vamos aprender como importar dados externos, fazer algumas manipulações e exportar (armazenar) os resultados. Também vamos ver algumas funções úteis para serem utilizadas durante as análises
+
 # Elementos da Aula
 
 1. [Leitura dos dados](#anchor1)
@@ -30,8 +31,6 @@ h1,h2,h3,h4,h5,h6{
 ## Leitura dos dados {#anchor1}
 
 Nosso principal uso da linguagem de programação R é a manipulação e análise de dados. Para tanto, utilizamos dados. Existem duas formas armazenar os dados. A primeira é gerarmos os dados dentro do R, conforme fizemos nas aulas anteriores. A segunda forma, e mais comumente utilizada, é importarmos dados externos
-
-Nesta aula vamos aprender como importar dados externos, fazer algumas manipulações e exportar (armazenar) os resultados. 
 
 De modo geral, os dados são armazenados em 3 formas diferentes:
 
@@ -46,11 +45,7 @@ o ambiente que estamos trabalhando. Assim, não teremos nenhum objeto da aula an
 klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "Copy code", tooltip_success = "Copied!")
 ```
 
-```{r}
-rm(list = ls(all = TRUE))
-
-```
-Vamos iniciar com o arquivo csv. É possivel utilizar a função "read" em diversos pacotes
+Vamos iniciar com o arquivo csv. É possivel utilizar a função "read" de diversos pacotes
 
 ```{r}
 # Usando pacote "utils"
@@ -64,6 +59,7 @@ alunos_csv <- read.csv(file = "dados/alunos.csv", header = T)
 alunos_csv
 
 ```
+
 Dependendo da configuração do seu computador, você deve usar a função alternativa
 ```{r}
 alunos_csv2 <- read.csv2(file = "dados/alunos.csv")
@@ -72,7 +68,9 @@ alunos_csv2
 alunos_csv2 <- read.csv2(file = "dados/alunos.csv", header = TRUE, sep = ",")
 alunos_csv2
 ```
-Arquivos .csv também podem ser importados através do pacote "tidyverse". Vamos ver
+
+Arquivos .csv também podem ser importados através do pacote "tidyverse". 
+
 ```{r}
 #install.packages("tidyverse", dependencies = T)
 library(tidyverse) 
@@ -87,6 +85,7 @@ alunos_csv <- read_csv(file = "dados/alunos.csv", col_names = T)
 alunos_csv
 
 ```
+
 Dependendo da configuração do seu computador, você deve usar a função alternativa
 ```{r}
 alunos_csv2 <- read_csv2(file = "dados/alunos.csv", col_names = T)
@@ -108,6 +107,8 @@ alunos_xls <- read_xlsx(path = "dados/alunos.xlsx")
 alunos_xls
 
 ```
+
+
 Esta função nos permite selecionar qual planilha do arquivo excel desejamos importar
 ```{r}
 alunos_xls <- read_xlsx(path = "dados/alunos.xlsx", sheet = 2)
@@ -120,6 +121,7 @@ alunos_xls <- read_xlsx(path = "dados/alunos.xlsx", sheet = "metadados")
 alunos_xls
 
 ```
+
 ## Funções úteis {#anchor2}
 
 
@@ -132,6 +134,7 @@ alunos
 
 rm("alunos_csv", "alunos_csv2", "alunos_xls")
 ```
+
 Para visualizarmos a estrutura dos dados, podemos usar as funções "str()" ou "glimpse()"
 ```{r}
 str(alunos)
@@ -140,7 +143,9 @@ str(alunos)
 
 glimpse(alunos)
 ```
-Funções "head()" e "tail()"
+
+Funções "head()" e "tail()". Como a própria palavra em inglês já diz, estas funções mostram os primeiros e últimos dados, respectivamente
+
 ```{r }
 head(x = alunos)
 
@@ -149,6 +154,7 @@ head(x = alunos, n = 3)
 tail(x = alunos, n = 3)
 
 ```
+
 Funções "length()", "ncol()" e "nrow()". A função length() em um dataframe automaticamente quantifica o comprimento de colunas. Isto é similar a função ncol()
 ```{r}
 length(x = alunos) 
@@ -156,6 +162,7 @@ length(x = alunos)
 ncol(alunos)
 
 ```
+
 Se quisermos saber o comprimento de linhas, precisamos indexar uma coluna qualquer, Ou utilizarmos a função "nrow"
 ```{r}
 
@@ -165,6 +172,7 @@ length(x = alunos$nome)
 
 nrow(alunos)
 ```
+
 Funções de estatistica descritiva. O R possui funções matemáticas descritivas, mas também podemos obter diversas estimativa em um comando único chamado "summary()"
 ```{r}
 summary(object = alunos)
@@ -385,7 +393,7 @@ write_excel_csv(x = alunos, file = "dados/alunos_alterado.xlsx")
 2. Selecione os 3 primeiros e 3 últimos nomes dos alunos da turma
  
 3. Substitua o último nome pelo seu nome. Se o seu nome for o último, substitua o primeiro
-
-4. Crie um objeto chamado "nomes", usando a função paste ou paste0, com todos os nomes selecionados no exercício 3. Este objeto deve ser um vetor com 1 valor.
-
-5. Crie um outro vetor contendo 2 nomes do vetor "nomes".
+ 
+4. Crie um objeto chamado "nomes", usando a função paste ou paste0, com os 3 primeiros selecionados no exercício 2. Este objeto deve ser um vetor com 1 valor.
+ 
+5. Crie um vetor sorteando 2 nomes do dataframe Alunos".

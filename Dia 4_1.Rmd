@@ -1,7 +1,8 @@
 ---
-title: "Gráficos"
+title: "Gráficos Intermediário"
+author: "Daniel Maurenza de Oliveira"
+date: "https://github.com/dmaurenza/Curso-Intermediario-R"
 output: html_document
-
 ---
 <style type="text/css">
 body, td {
@@ -28,10 +29,10 @@ Nesta aula vamos adicionar complexidades aos nossos gráficos, pois nem sempre o
 3. [Funções scale](#anchor3)
 
 ## Função aes() {#anchor1}
-## Funções de texto e rótulos {#anchor2}
-Digamos que queremos fazer um gráfico de dispersão que demonstre a relação entre a altura e o peso dos alunos da turma (tabela alunos). Porém, queremos diferenciar essa relação entre homens e mulheres. Para tanto, precisamos incluir uma nova variável ao nosso gráfico, neste caso, "sexo", que informe para cada ponto se a relação entre altura e peso é de um homem ou uma mulher
 
-Para fazermos este tipo de gráfico, vamos usar a habilidade do ggplot que permite incluir elementos visuais dentro da função aes(). Vamos ver alguns exemplos utilizando os dados gapminder, que mostra valores de renda per capita, expectativa de vida e tamanho populacional para diversos paises e continentes
+Digamos que queremos fazer um gráfico de dispersão que demonstre a relação entre a altura e o peso dos alunos da turma (tabela alunos). Porém, queremos diferenciar essa relação entre homens e mulheres. Para tanto, precisamos incluir uma nova variável ao nosso gráfico, neste caso, "sexo", que informe para cada ponto se a relação entre altura e peso é de um homem ou uma mulher.
+
+Para fazermos este tipo de gráfico, vamos usar a habilidade do ggplot2 que permite incluir elementos visuais dentro da função aes(). Vamos ver alguns exemplos utilizando os dados gapminder, que mostra valores de renda per capita, expectativa de vida e tamanho populacional para diversos países e continentes.
 
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(position = c('top', 'right'), color = 'auto', tooltip_message = "Copy code", tooltip_success = "Copied!")
@@ -47,7 +48,7 @@ p + geom_point()
 # Interpretação: a expectativa de vida aumenta abruptamente com o aumento da renda per capita, até um teto de idade (entre 70 e 80 anos)
 ```
 
-Incluind uma nova variável à função aes() dentro da função geom_(), podemos diferenciar a relação entre espectativa de vida e renda per capita de cada continente. A função aes() esta dentro do argumento mapping, portanto ela mapeia as variáveis dos seus dados para as propriedades do gráfico. Assim, podemos também usar as variáveis dos seus dados para mapear os elementos visuais.
+Incluindo uma nova variável à função aes() dentro da função geom_(), podemos diferenciar a relação entre espectativa de vida e renda per capita para cada continente. A função aes() esta dentro do argumento "mapping", portanto ela mapeia as variáveis dos seus dados (argumento "data") para as propriedades do gráfico. 
 
 ```{r fig.dim = c(6, 4) }
 p + geom_point(aes(color = continent))
@@ -55,14 +56,14 @@ p + geom_point(aes(color = continent))
 # porém, há diferenças entre os continentes
 ```
 
-Notem que elementos visuais que utilizam a tabela de dados devem estar dentro da função aes(). Se utilizarmos fora da função aes() temos um erro.
+Notem que os elementos visuais provenientes da tabela de dados devem estar dentro da função aes(). Se utilizarmos fora da função aes() temos um erro.
 
 ```{r fig.dim = c(6, 4), error=TRUE}
 p + geom_point(color = continent)
 
 ```
 
-Como vimos, as funções geom_() podem usar diversos argumentos que afetaram elementos visuais, porém eles podem ser utilizados dentro ou fora da função aes(), dependendo do que desejamos. Se utilizamos informações que estão dentro da tabela de dados, temos que usar estes argumentos dentro de aes()
+Como vimos na aula anterir, as funções geom_() podem usar diversos argumentos para modificar elementos visuais, porém eles podem ser utilizados tanto dentro como fora da função aes(), dependendo do que desejamos. Se utilizamos informações que estão dentro da tabela de dados, temos que usar estes argumentos dentro de aes()
 
 ```{r fig.dim = c(6, 4) }
 p + geom_point(color = "purple")
@@ -117,7 +118,7 @@ p +  geom_line(aes(linetype = supp, color = supp, linewidth = supp))
 Notem que a legenda só aparece quando elementos visuais são adicionados a nova variável dentro da função aes(). Mais adiante veremos como fazer ajustes na legenda.
 
 
-Vamos ver um exemplo com gráficos de barra 
+Vamos ver um exemplo com gráficos de barra. Neste caso, para preenchermos as barras com cores diferentes, utilizamos o argumento "fill"
 ```{r fig.dim = c(6, 4) }
 library(gcookbook)  
 cabbage_exp
@@ -137,7 +138,7 @@ p + geom_col(aes(fill = Cultivar), position = "stack")
 
 ```
 
-Bem como outros elementos das barras
+Podemos também definir outros elementos das barras
 
 ```{r fig.dim = c(6, 4) }
 p + geom_col(aes(fill = Cultivar), position = "dodge", color = "black")
@@ -162,7 +163,7 @@ p + geom_col(aes(fill = Cultivar), position = "dodge")+
        caption = "Fonte: R base") 
 ```
 
-Em gráficos de barra, adicionar textos fornece maior detalhamento dos valores da barra. Existem diversos ajustes que podem ser feitos, e dependendo do ajuste, temos que adicionar o argumento group dentro da função aes()
+Podemos adicionar textos para fornecer maior detalhamento dos valores da barra. Existem diversos ajustes que podem ser feitos, e dependendo do ajuste, temos que adicionar o argumento group dentro da função aes()
  
 
 ```{r fig.dim = c(6, 4) }
@@ -231,7 +232,7 @@ p + geom_col(aes(fill = Cultivar), position = "dodge")+
 
 # Funções scale {#anchor3}
 
-Vamos adicionar um pouco mais de complexidades ao nosso gráfico, a fim de torná-lo mais elegante. Digamos que as cores usadas automaticamente pelo ggplot não são muito agradáveis. Vamos ver como podemos alterar manualmente as cores das barras usando uma função chamada "scale_fill_manual()
+Vamos adicionar um pouco mais de complexidades ao nosso gráfico, a fim de torná-lo mais elegante. Digamos que as cores usadas automaticamente pelo ggplot2 não são muito agradáveis. Vamos ver como podemos alterar manualmente as cores das barras usando uma função chamada "scale_fill_manual()"
 
 ```{r fig.dim = c(6, 4) }
 
@@ -242,7 +243,7 @@ p + geom_col(aes(fill = Cultivar)) +
 
 ```
 
-Similarmente, podemos alterar as cores de linhas e pontos usando a função "scale_color_manual. 
+Similarmente, em gráficos de linhas e pontos podemos alterar as cores das linhas e dos pontos usando a função "scale_color_manual". 
 ```{r fig.dim = c(6, 4) }
 p <- ggplot(tg, aes(x = dose, y = length)) 
 
@@ -257,29 +258,43 @@ p + geom_point(aes(color = continent))+ # gráfico de pontos
 
 ```
 
-Importante! As funções scale_fill_manual e scale_color_manual só funcionam corretamente se dentro da função geom_() foram utilizados os argumentos "fill" e "color", respectivamente, dentro da função aes(). Pense na racionalidade por traz disso. Ao utilizarmos a função scale..., estamos modificando parâmetros de algo já existente. Se não incluímos antes, não há elementos para serem modificados
+Repare que o gráfico de linhas existem 2 categorias (OJ e VJ), portanto, modificar manualmente as cores exige incluir 2 valores. Já no gráfico de pontos, existem 5 categorias (Africa, Americas, Asia, Europa e Ociania), exigindo assim a inclusão de 5 valores
+
+
+
+
+Importante! As funções "scale_fill_manual" e "scale_color_manual" só funcionam corretamente se,  dentro da função geom_(), forem inseridos os argumentos "fill" e "color", respectivamente, dentro da função aes(). Pense na racionalidade por tras disso. Ao utilizarmos a função scale..., estamos modificando parâmetros de algo já existente. Ou seja, Se não incluímos a respectiva função antes, não há elementos para serem modificados manualmente
+
+
 
 ```{r fig.dim = c(6, 4) }
 
 p <- ggplot(data = cabbage_exp, aes(x = Date, y = Weight))
-p + geom_col(aes(color = Cultivar)) 
-
-p + geom_col(aes(color = Cultivar)) +
-  scale_fill_manual(values=c("darkgreen", "darkblue"))
 
 p + geom_col(aes(fill = Cultivar)) 
 
-p + geom_col(aes(fill = Cultivar)) +
+p + geom_col() +
   scale_fill_manual(values=c("darkgreen", "darkblue"))
 
-p + geom_col(aes(color = Cultivar)) 
+p + geom_col(aes(fill = Cultivar))+
+  scale_fill_manual(values=c("darkgreen", "darkblue"))
 
-p + geom_col(aes(color = Cultivar)) +
-  scale_color_manual(values=c("darkgreen", "darkblue"))
 ```
 
+Um exemplo com graficos de pontos. Neste caso, devemos usar a função "scale_color_manual"
 
-Enfim, vamos ver o nosso gráfico final
+```{r fig.dim = c(6, 4) }
+p <- ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+
+p + geom_point(aes(color = continent))
+
+p + geom_point(aes(color = continent))+
+  scale_color_manual(values=c("darkgreen", "darkblue", "red", "orange", "purple"))
+
+```
+
+Agora que aprendemos novas funcionalidades do ggplot2, vamos ver o nosso gráfico final
+
 
 ```{r fig.dim = c(6, 4) }
 
@@ -298,4 +313,10 @@ p + geom_col(aes(fill = Cultivar), position = "dodge", color = "black")+
   ylim(c(0, 4))+
   scale_fill_manual(values=c("darkgreen", "darkblue"))
 ```
+
+---
+
+## Exercícios
+
+6. Copie o script do gráfico elaborado no último exercício. Faça novos ajustes de escala dos eixos x e y, e modifique manualmente as cores dos pontos.
   
